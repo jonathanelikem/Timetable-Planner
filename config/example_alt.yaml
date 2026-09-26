@@ -1,0 +1,135 @@
+# =====================================================================
+# INSTITUTION CONFIGURATION — Example alternate deployment
+# =====================================================================
+# Demonstrates portability. Same codebase, same loader, same analytics.
+# Differences from the UGBS config: a six-day teaching week, a shorter
+# usable-gap threshold, a different cohort label, a heavier penalty on
+# early starts, and a much heavier penalty on low-value commute days.
+# No source file changes when this config is used instead.
+# =====================================================================
+
+institution:
+  name: Example College of Health Sciences
+  short_name: ECHS
+  academic_period: Second Semester
+  academic_year: 2024/2025
+calendar:
+  teaching_days:
+  - Monday
+  - Tuesday
+  - Wednesday
+  - Thursday
+  - Friday
+  - Saturday
+  slots:
+  - label: S1
+    start: 07:30
+    end: 09:20
+  - label: S2
+    start: 09:30
+    end: '11:20'
+  - label: S3
+    start: '11:30'
+    end: '13:20'
+  - label: S4
+    start: '13:30'
+    end: '15:20'
+  - label: S5
+    start: '15:30'
+    end: '17:20'
+  - label: S6
+    start: '17:30'
+    end: '19:20'
+  min_usable_gap_minutes: 60
+  early_start_threshold: 09:00
+  late_finish_threshold: '17:20'
+structure:
+  year_group_label: Year
+  year_groups:
+  - 100
+  - 200
+  - 300
+  - 400
+  section_label: Stream
+  section_not_applicable: N/A
+departments:
+  prefix_map:
+    ACCT: Accounting
+    FINC: Finance
+    HSMA: Health Services Management
+    MKTG: Marketing & Entrepreneurship
+    OHRM: Organisation & Human Resource Management
+    OMIS: Operations & Management Information Systems
+    PADM: Public Administration
+    UGBS: School-wide Core
+  core_prefixes:
+  - UGBS
+venues:
+  building_map:
+    A1: Main Lecture Block
+    B1: Main Lecture Block
+    F4: F Block
+    F5: F Block
+    G1: G Block
+    GCB: GCB Building
+    JQB 09: JQB Building
+  virtual_token: ONLINE
+transit:
+  default_minutes: 12
+  matrix:
+    Main Lecture Block|Main Lecture Block: 2
+    F Block|F Block: 2
+    G Block|G Block: 2
+    GCB Building|GCB Building: 2
+    JQB Building|JQB Building: 2
+    Main Lecture Block|F Block: 8
+    Main Lecture Block|G Block: 10
+    Main Lecture Block|GCB Building: 12
+    Main Lecture Block|JQB Building: 14
+    F Block|G Block: 6
+    F Block|GCB Building: 14
+    F Block|JQB Building: 15
+    G Block|GCB Building: 15
+    G Block|JQB Building: 16
+    GCB Building|JQB Building: 10
+  changeover_minutes: 10
+delivery:
+  in_person_label: In-Person
+  online_label: Online
+  low_value_commute_threshold: 2
+congestion_weights:
+  contact_hours: 10.0
+  sessions: 4.0
+  span_hours: 3.0
+  idle_hours: 5.0
+  building_transitions: 2.0
+  tight_transition: 15.0
+  early_start: 20.0
+  late_finish: 8.0
+combination_weights:
+  mean_congestion: 1.0
+  peak_day_congestion: 0.6
+  campus_days: 4.0
+  low_value_commute_days: 40.0
+  total_idle_hours: 4.0
+  early_start_days: 6.0
+  infeasible_transitions: 40.0
+schema:
+  required:
+  - day
+  - start_time
+  - end_time
+  - course_code
+  - course_name
+  - year_group
+  optional:
+  - section
+  - venue
+  - delivery_mode
+  - department
+  - building
+  - lecturer
+  - capacity
+  - session_type
+  - effective_from
+  - effective_to

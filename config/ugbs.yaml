@@ -1,0 +1,162 @@
+# =====================================================================
+# INSTITUTION CONFIGURATION — University of Ghana Business School
+# =====================================================================
+# Every institution-specific value lives in this file. No course code,
+# venue name, department name, day name or time slot appears anywhere
+# in the source code. To deploy the system for another School, College
+# or university, copy this file and edit it. Nothing else changes.
+#
+# ASSUMPTIONS ARE FLAGGED WITH [ASSUMPTION]. These require validation
+# with the timetable office before production deployment.
+# =====================================================================
+
+institution:
+  name: "University of Ghana Business School"
+  short_name: "UGBS"
+  academic_period: "Second Semester"
+  academic_year: "2024/2025"
+
+# ---------------------------------------------------------------------
+# TEACHING CALENDAR
+# ---------------------------------------------------------------------
+calendar:
+  teaching_days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+  # Slots are declared, not inferred. An institution with 60-minute
+  # periods or a Saturday schedule only edits this block.
+  slots:
+    - {label: "S1", start: "07:30", end: "09:20"}
+    - {label: "S2", start: "09:30", end: "11:20"}
+    - {label: "S3", start: "11:30", end: "13:20"}
+    - {label: "S4", start: "13:30", end: "15:20"}
+    - {label: "S5", start: "15:30", end: "17:20"}
+    - {label: "S6", start: "17:30", end: "19:20"}
+  # Minimum gap that counts as usable study/meeting time.
+  min_usable_gap_minutes: 90
+  # A start at or before this time is treated as an "early start" and
+  # penalised in congestion scoring.
+  early_start_threshold: "08:00"
+  # A session ending at or after this is treated as a "late finish".
+  late_finish_threshold: "17:20"
+
+# ---------------------------------------------------------------------
+# ACADEMIC STRUCTURE
+# ---------------------------------------------------------------------
+structure:
+  # What the institution calls its cohort dimension.
+  year_group_label: "Level"
+  year_groups: [100, 200, 300, 400]
+  # What it calls its within-course subdivisions.
+  section_label: "Group"
+  # Value written where a course has no section split.
+  section_not_applicable: "N/A"
+
+# ---------------------------------------------------------------------
+# DEPARTMENT MAPPING
+# ---------------------------------------------------------------------
+# Course codes carry no department field in the source timetable, so the
+# department is derived from the code prefix. This mapping is the ONLY
+# place that derivation is defined.
+departments:
+  prefix_map:
+    ACCT: "Accounting"
+    FINC: "Finance"
+    HSMA: "Health Services Management"
+    MKTG: "Marketing & Entrepreneurship"
+    OHRM: "Organisation & Human Resource Management"
+    OMIS: "Operations & Management Information Systems"
+    PADM: "Public Administration"
+    UGBS: "School-wide Core"
+  # Prefixes treated as compulsory core rather than departmental electives.
+  core_prefixes: [UGBS]
+
+# ---------------------------------------------------------------------
+# VENUES AND BUILDINGS
+# ---------------------------------------------------------------------
+# [ASSUMPTION] Building assignments and walking times below are inferred
+# from venue naming conventions and have NOT been confirmed with UGBS
+# Estates. They are parameters, not facts: correcting them requires
+# editing this block only.
+venues:
+  building_map:
+    A1: "Main Lecture Block"
+    B1: "Main Lecture Block"
+    F4: "F Block"
+    F5: "F Block"
+    G1: "G Block"
+    GCB: "GCB Building"
+    JQB 09: "JQB Building"
+  # Token used in the source data for non-physical sessions.
+  virtual_token: "ONLINE"
+
+# Walking time in minutes between buildings. Symmetric; unlisted pairs
+# fall back to default_transit_minutes.
+transit:
+  default_minutes: 12
+  matrix:
+    "Main Lecture Block|Main Lecture Block": 2
+    "F Block|F Block": 2
+    "G Block|G Block": 2
+    "GCB Building|GCB Building": 2
+    "JQB Building|JQB Building": 2
+    "Main Lecture Block|F Block": 8
+    "Main Lecture Block|G Block": 10
+    "Main Lecture Block|GCB Building": 12
+    "Main Lecture Block|JQB Building": 14
+    "F Block|G Block": 6
+    "F Block|GCB Building": 14
+    "F Block|JQB Building": 15
+    "G Block|GCB Building": 15
+    "G Block|JQB Building": 16
+    "GCB Building|JQB Building": 10
+  # Minutes between the end of one session and the start of the next.
+  # Derived from the slot grid (09:20 -> 09:30). Used to decide whether
+  # a back-to-back pair is physically feasible.
+  changeover_minutes: 10
+
+# ---------------------------------------------------------------------
+# DELIVERY MODES
+# ---------------------------------------------------------------------
+delivery:
+  in_person_label: "In-Person"
+  online_label: "Online"
+  # A day with in-person sessions at or below this count is flagged as a
+  # "low-value commute day" — the student travels to campus for very little.
+  low_value_commute_threshold: 1
+
+# ---------------------------------------------------------------------
+# CONGESTION SCORING WEIGHTS
+# ---------------------------------------------------------------------
+# The congestion score answers: "how heavy is this day for the student?"
+# Higher = more congested. Weights are business judgements and are
+# exposed here so they can be tuned without touching code.
+congestion_weights:
+  contact_hours: 10.0        # per hour of scheduled class
+  sessions: 4.0              # per session, independent of length
+  span_hours: 3.0            # per hour between first start and last end
+  idle_hours: 5.0            # per hour of unusable gap between classes
+  building_transitions: 6.0  # per move between buildings
+  tight_transition: 15.0     # per transition where walking time > changeover
+  early_start: 8.0           # day begins at or before early_start_threshold
+  late_finish: 8.0           # day ends at or after late_finish_threshold
+
+# ---------------------------------------------------------------------
+# COMBINATION RANKING WEIGHTS
+# ---------------------------------------------------------------------
+# Used to rank clash-free elective combinations. Lower total = better.
+combination_weights:
+  mean_congestion: 1.0
+  peak_day_congestion: 0.6   # penalises one brutal day
+  campus_days: 12.0          # per day the student must physically attend
+  low_value_commute_days: 20.0
+  total_idle_hours: 4.0
+  early_start_days: 6.0
+  infeasible_transitions: 40.0   # hard penalty: cannot physically arrive
+
+# ---------------------------------------------------------------------
+# DATA CONTRACT
+# ---------------------------------------------------------------------
+# Fields the loader requires, and fields it will use if supplied.
+schema:
+  required: [day, start_time, end_time, course_code, course_name, year_group]
+  optional: [section, venue, delivery_mode, department, building,
+             lecturer, capacity, session_type, effective_from, effective_to]
