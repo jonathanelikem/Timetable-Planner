@@ -1,0 +1,18 @@
+# The interface uses a fixed light palette. Department colours, the
+# conflict hatching and the grid rules are all chosen for a light
+# background, so the theme is pinned here rather than left to follow the
+# viewer's system setting. Without this, a user in dark mode sees dark
+# text on dark panels and parts of the interface disappear.
+[theme]
+base = "light"
+primaryColor = "#96513F"
+backgroundColor = "#FCFBF9"
+secondaryBackgroundColor = "#F2F0EB"
+textColor = "#16202F"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
