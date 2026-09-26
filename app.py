@@ -64,17 +64,30 @@ html, body, [class*="css"], .stApp, button, input, textarea, select {
 .stApp { background: __PAPER__; }
 .block-container { padding-top: 3.4rem; max-width: 1500px; }
 
-/* Streamlit floats its own toolbar (Deploy button, hamburger menu) over
-   the top-right of the page, where it covered the title. It is developer
-   chrome rather than part of the planner, so it is hidden here and the
-   page keeps its own top margin.
+/* Streamlit floats its own toolbar over the top-right of the page, where
+   the Deploy button and developer menu covered the title. Those are hidden
+   here, but the toolbar itself is kept, because the button that reopens a
+   closed sidebar lives inside it. Hiding the whole toolbar takes that
+   button away and leaves the sidebar unreachable once it is closed.
 
-   TO BRING THE DEPLOY BUTTON AND MENU BACK: delete the stToolbar rule
-   on the next line, and raise .block-container padding-top above to
-   4.75rem so the toolbar does not sit on the title again. */
-[data-testid="stToolbar"] { display: none; }
+   TO BRING THE DEPLOY BUTTON AND MENU BACK: delete the stAppDeployButton
+   and stMainMenu rules below. The menu is also where Streamlit keeps its
+   light/dark theme switch, so restoring it lets a viewer change the theme
+   — which this interface is not designed for, since its colours assume a
+   light background. */
+[data-testid="stAppDeployButton"] { display: none; }
+[data-testid="stMainMenu"] { display: none; }
 [data-testid="stDecoration"] { display: none; }
-[data-testid="stHeader"] { background: transparent; height: 0; }
+[data-testid="stHeader"] { background: transparent; }
+
+/* Keep the sidebar open/close controls reachable at all times. */
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapseButton"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 999;
+}
 
 h1, h2, h3, h4 { color: __INK__; letter-spacing: -0.015em; }
 h2 { font-size: 1.05rem; font-weight: 600; margin: 1.9rem 0 0.2rem 0; }
