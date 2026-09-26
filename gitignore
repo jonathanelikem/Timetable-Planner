@@ -1,0 +1,28 @@
+# Virtual environments — never commit these. They are hundreds of
+# megabytes, are specific to the machine that built them, and will break
+# a cloud deployment rather than help it. Streamlit Community Cloud
+# builds its own environment from requirements.txt.
+venv/
+.venv/
+env/
+ENV/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Editor and OS clutter
+.vscode/
+.idea/
+.vs/
+.DS_Store
+Thumbs.db
+
+# Streamlit runtime secrets. The planner needs none, but if one is ever
+# added it must not reach a public repository.
+.streamlit/secrets.toml
+
+# Scratch output
+*.log
+/tmp/

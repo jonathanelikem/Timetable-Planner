@@ -1,0 +1,12 @@
+pandas>=2.0
+openpyxl>=3.1
+PyYAML>=6.0
+streamlit>=1.30
+pdfplumber>=0.10
+
+# Optional. The Ask tab uses sentence embeddings when this is installed
+# and a model is cached locally; without it, it falls back to a built-in
+# lexical matcher that needs no download and no network. Install only if
+# you want the stronger interpreter AND can cache the model before a
+# demonstration — the first run downloads roughly 90MB.
+# sentence-transformers>=2.2
